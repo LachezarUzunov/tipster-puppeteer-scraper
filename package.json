@@ -1,0 +1,19 @@
+{
+  "name": "tipster",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.0.3",
+    "mysql2": "^3.2.4",
+    "puppeteer": "^20.1.0",
+    "sequelize": "^6.31.1"
+  }
+}
