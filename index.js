@@ -5,7 +5,7 @@ const { connectDB, sequelize } = require('./config/db');
 const Country = require('./models/countryModel');
 const Team = require('./models/TeamsModel');
 const League = require('./models/leaguesModel');
-const { savingCountries } = require('./controller/FixturesController');
+const { savingCountries, savingLeagues } = require('./controller/FixturesController');
 
 // Connecting to the mySQL databsae
 //connectDB()
@@ -14,34 +14,75 @@ let browser;
 
 const url = 'https://tipster.bg/statistika';
 
-async function main() {
+async function sleep(miliseconds) {
+    return new Promise(resolve => setTimeout(resolve, miliseconds))
+}
+
+async function scrapingLeagues (leagueUrl, page) {
+    let leagueResults = []
+    try {
+        await page.goto(leagueUrl, { waitUntil: "networkidle2" });
+        const html = await page.evaluate(() => document.body.innerHTML);
+        const $ = cheerio.load(html);
+
+        const league = $('.standing-title').map((index, element) => {
+            return $(element).text().split(' - ');
+        }).get();
+
+        const country = $('.standing-title').map((index, element) => {
+            return $(element).text().split(' - ');
+        }).get();
+
+        return {
+            league: league[0],
+            country: country[1]
+        }        
+    } catch (error) {
+        console.log(error)
+    }
+    
+}
+
+async function scrapingCountries(url) {
     let countries = []
-    browser = await puppeteer.launch({ headless: false })
+    try {
+        const page = await browser.newPage();
+        await page.goto(url, { waitUntil: 'networkidle2' })
+        const html = await page.evaluate(() => document.body.innerHTML);
+        const $ = cheerio.load(html);
+    
+        const countriesResult = $('.llong').map((index, element) => {
+            return ($(element).text().split(' - ')[0]);
+        }).get();
+    
+        const leagueUrls = $('.dce').map((index, element) => {
+            return 'https://tipster.bg' + ($(element).find('a').attr('href'))
+        }).get();
+    
+        countries = countriesResult.filter((c, i) => c !== countriesResult[i + 1]);
+        return leagueUrls;
+        // ----- Saving countries to database --------- //
+        //countries.forEach(c => savingCountries(c));
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function main() {
+    browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle2' })
-    const html = await page.evaluate(() => document.body.innerHTML);
-    const $ = cheerio.load(html);
-    const countriesResult = $('.llong').map((index, element) => {
-        return ($(element).text().split(' - ')[0]);
-    }).get();
+    const leagueUrls = await scrapingCountries(url)
+    let leaguesCountries = []
+    for (let i = 1; i < leagueUrls.length; i++) {
+       const league = await scrapingLeagues(leagueUrls[i], page);
+       leaguesCountries.push(league);
+       await sleep(300);
+    }
 
-    // const leagues = $('.llong').map((index, element) => {
-    //     return ($(element).text().split(' - ')[1]);
-    // }).get();
-
-    countries = countriesResult.filter((c, i) => c !== countriesResult[i + 1]);
-  //  console.log(countries);
-//     const countryLeague = countriesResult.map((c, i) => {
-//         return {
-//             country: c,
-//             league: leagues[i]
-//         }
-//     })
-//     console.log(countryLeague)
-
-countries.forEach(c => savingCountries(c));
-console.log(countries)
+    leaguesCountries.forEach(l => savingLeagues(l));
+   // console.log(leaguesCountries)
  }
+
 
 // Setting up database relations
 Country.hasMany(League, { as: 'leagues'});
