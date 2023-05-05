@@ -1,5 +1,6 @@
 const Country = require('../models/countryModel');
 const League = require('../models/leaguesModel');
+const Team = require('../models/teamsModel');
 
 // Saving countries to database
 const savingCountries = async (country) => {
@@ -57,21 +58,52 @@ const savingLeagues = async (leagueCountry) => {
                 }
             })
 
-            if (existingLeague) {
-                throw new Error('League exists already')
-            } else {
+            if (!existingLeague) {
                 const newLeague = await League.create({
                     league: leagueCountry.league,
                     countryId: existingCountry.id
                 })
-            }
+            } 
         }
     } catch (error) {
         console.log(error)
     }
 }
 
+// Saving teams to leagues
+const savingTeams = async (leagueAndTeams) => {
+    try {
+        // find if league exists db
+        const leagueExists = await League.findOne({
+            where: {
+                league: leagueAndTeams.league
+            }
+        })
+
+        if (leagueExists) {
+            leagueAndTeams.teams.forEach(async (t) => {
+             // find if team exists in db
+                const teamExists = await Team.findOne({
+                    where: {
+                        team: t
+                    }
+                })
+
+                if (!teamExists) {
+                    await Team.create({
+                        team: t,
+                        leagueId: leagueExists.id
+                    })
+                }
+            })
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     savingCountries,
     savingLeagues,
+    savingTeams
 }

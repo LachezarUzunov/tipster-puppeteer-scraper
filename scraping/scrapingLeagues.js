@@ -1,7 +1,6 @@
 const cheerio = require('cheerio')
 
 async function scrapingLeagues (leagueUrl, page) {
-    let leagueResults = []
     try {
         await page.goto(leagueUrl, { waitUntil: "networkidle2" });
         const html = await page.evaluate(() => document.body.innerHTML);

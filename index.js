@@ -2,10 +2,12 @@ const dotenv = require('dotenv').config();
 const puppeteer = require('puppeteer');
 const { connectDB, sequelize } = require('./config/db');
 const Country = require('./models/countryModel');
-const Team = require('./models/TeamsModel');
+const Team = require('./models/teamsModel');
 const League = require('./models/leaguesModel');
 const { scrapingCountries } = require('./scraping/scrapingCountries');
 const { scrapingLeagues } = require('./scraping/scrapingLeagues');
+const { savingLeagues } = require('./controller/FixturesController');
+const { scrapingTeams } = require('./scraping/scrapingTeam');
 
 // Connecting to the mySQL databsae
 connectDB()
@@ -26,15 +28,16 @@ async function main() {
     const leagueUrls = await scrapingCountries(url, browser)
     let leaguesCountries = []
 
-    // Scraping leagues for each league URL;
-    for (let i = 1; i < leagueUrls.length; i++) {
-       const league = await scrapingLeagues(leagueUrls[i], page);
-       leaguesCountries.push(league);
+    // Scraping leagues and teams for each league URL;
+    for (let i = 1; i < 3; i++) {
+       const leagueAndCountry = await scrapingLeagues(leagueUrls[i], page);
+       const leagueTeams = await scrapingTeams(leagueUrls[i], page, leagueAndCountry.league);
+
+       leaguesCountries.push(leagueAndCountry);
        await sleep(300);
     }
 
-   // leaguesCountries.forEach(l => savingLeagues(l));
-   // console.log(leaguesCountries)
+   leaguesCountries.forEach(l => savingLeagues(l));
  }
 
 
@@ -49,7 +52,7 @@ Team.belongsTo(League, {
     foreignKey: 'id',
 })
 
-//main();
+main();
 
 const createTable = async () => {
     try {
@@ -59,4 +62,4 @@ const createTable = async () => {
         console.log('Error syncing the table and the model')
     }
 }
-createTable();
+//createTable();
