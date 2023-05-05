@@ -59,12 +59,12 @@ const savingLeagues = async (leagueCountry) => {
 
             if (existingLeague) {
                 throw new Error('League exists already')
+            } else {
+                const newLeague = await League.create({
+                    league: leagueCountry.league,
+                    countryId: existingCountry.id
+                })
             }
-
-            const newLeague = await League.create({
-                league: leagueCountry.league,
-                countryId: existingCountry.id
-            })
         }
     } catch (error) {
         console.log(error)
