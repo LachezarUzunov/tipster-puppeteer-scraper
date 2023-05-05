@@ -4,6 +4,8 @@ const { connectDB, sequelize } = require('./config/db');
 const Country = require('./models/countryModel');
 const Team = require('./models/teamsModel');
 const League = require('./models/leaguesModel');
+const Game = require('./models/gameModel');
+const StandardMarket = require('./models/marketsModels/standardMarketModel');
 const { scrapingCountries } = require('./scraping/scrapingCountries');
 const { scrapingLeagues } = require('./scraping/scrapingLeagues');
 const { scrapingTeams } = require('./scraping/scrapingTeam');
@@ -45,13 +47,23 @@ League.belongsTo(Country, {
 League.hasMany(Team, { as: 'teams '});
 Team.belongsTo(League, {
     foreignKey: 'id',
-})
+});
 
-main();
+League.hasMany(Game, { as: 'games' });
+Game.belongsTo(League, {
+    foreignKey: 'id'
+});
+
+Game.hasOne(StandardMarket, { as: 'standard '});
+StandardMarket.belongsTo(Game, {
+    foreignKey: 'id'
+});
+
+//main();
 
 const createTable = async () => {
     try {
-        const res = await Team.sync();
+        const res = await Game.sync({ alter: true });
         console.log('Table and model synced successfully')
     } catch (err) {
         console.log('Error syncing the table and the model')

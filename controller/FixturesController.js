@@ -54,7 +54,7 @@ const savingLeagues = async (league, country) => {
             const existingLeague = await League.findOne({
                 where: {
                     league: league,
-                    countryId: existingCountry.id
+                   // countryId: existingCountry.id
                 }
             })
 
