@@ -25,13 +25,13 @@ async function main() {
 
     // Scraping countries and getting league URLs
     const leagueUrls = await scrapingCountries(url, browser)
-
+  // console.log(leagueUrls)
     // Scraping leagues and teams for each league URL;
-    for (let i = 1; i < leagueUrls.length; i++) {
+    for (let i = 0; i < leagueUrls.length; i++) {
        const league = await scrapingLeagues(leagueUrls[i], page);
-      // await scrapingTeams(leagueUrls[i], page, league);
+       await scrapingTeams(leagueUrls[i], page, league);
 
-       await sleep(300);
+       await sleep(100);
     }
  }
 
@@ -47,7 +47,7 @@ Team.belongsTo(League, {
     foreignKey: 'id',
 })
 
-//main();
+main();
 
 const createTable = async () => {
     try {

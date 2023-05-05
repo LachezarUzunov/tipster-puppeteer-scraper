@@ -16,11 +16,10 @@ const savingCountries = async (country) => {
             throw ('Country exists in the database')
         }
 
-        const newCountry = await Country.create({
+        await Country.create({
             country: country
         })
 
-        console.log(newCountry);
     } catch (error) {
         console.log(error)
     }
@@ -43,7 +42,7 @@ const savingCountries = async (country) => {
 
 // Saving leagues to database with ID of the country
 const savingLeagues = async (league, country) => {
-
+   // console.log(league, country)
     try {
         const existingCountry = await Country.findOne({
             where: {
@@ -51,20 +50,23 @@ const savingLeagues = async (league, country) => {
             }
         })
 
-        if (existingCountry) {
+       if (existingCountry) {
             const existingLeague = await League.findOne({
                 where: {
-                    league: league
+                    league: league,
+                    countryId: existingCountry.id
                 }
             })
 
-            if (!existingLeague) {
-                    await League.create({
-                    league: league,
-                    countryId: existingCountry.id
-                })
-            } 
-        }
+            if (existingLeague) {
+                throw 'Лигата съществува'
+            }
+               
+            await League.create({
+            league: league,
+            countryId: existingCountry.id
+            })
+       }
     } catch (error) {
         console.log(error)
     }
@@ -76,7 +78,7 @@ const savingTeams = async (team, league) => {
         // find if league exists db
         const leagueExists = await League.findOne({
             where: {
-                league: league
+                league: league,
             }
         })
 
@@ -87,12 +89,14 @@ const savingTeams = async (team, league) => {
                 }
             })
 
-                if (!teamExists) {
-                    await Team.create({
-                        team: team,
-                        leagueId: leagueExists.id
-                    })
+                if (teamExists) {
+                  throw 'Отборът вече е добавен'
                 }
+
+                await Team.create({
+                    team: team,
+                    leagueId: leagueExists.id
+                })
             }
     } catch (error) {
         console.log(error);
