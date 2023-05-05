@@ -1,4 +1,5 @@
-const cheerio = require('cheerio')
+const cheerio = require('cheerio');
+const { savingLeagues } = require('../controller/FixturesController');
 
 async function scrapingLeagues (leagueUrl, page) {
     try {
@@ -14,10 +15,12 @@ async function scrapingLeagues (leagueUrl, page) {
             return $(element).text().split(' - ');
         }).get();
 
-        return {
-            league: league[0],
-            country: country[1]
-        }        
+        const currentLeague = league[0];
+        const currentCountry = country[1]
+
+        await savingLeagues(currentLeague, currentCountry)
+
+        return { currentLeague }        
     } catch (error) {
         console.log(error)
     } 

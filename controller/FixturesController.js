@@ -42,25 +42,25 @@ const savingCountries = async (country) => {
 // }
 
 // Saving leagues to database with ID of the country
-const savingLeagues = async (leagueCountry) => {
+const savingLeagues = async (league, country) => {
 
     try {
         const existingCountry = await Country.findOne({
             where: {
-                country : leagueCountry.country
+                country : country
             }
         })
 
         if (existingCountry) {
             const existingLeague = await League.findOne({
                 where: {
-                    league: leagueCountry.league
+                    league: league
                 }
             })
 
             if (!existingLeague) {
-                const newLeague = await League.create({
-                    league: leagueCountry.league,
+                    await League.create({
+                    league: league,
                     countryId: existingCountry.id
                 })
             } 
@@ -71,32 +71,29 @@ const savingLeagues = async (leagueCountry) => {
 }
 
 // Saving teams to leagues
-const savingTeams = async (leagueAndTeams) => {
+const savingTeams = async (team, league) => {
     try {
         // find if league exists db
         const leagueExists = await League.findOne({
             where: {
-                league: leagueAndTeams.league
+                league: league
             }
         })
 
         if (leagueExists) {
-            leagueAndTeams.teams.forEach(async (t) => {
-             // find if team exists in db
-                const teamExists = await Team.findOne({
-                    where: {
-                        team: t
-                    }
-                })
+            const teamExists = await Team.findOne({
+                where: {
+                    team: team
+                }
+            })
 
                 if (!teamExists) {
                     await Team.create({
-                        team: t,
+                        team: team,
                         leagueId: leagueExists.id
                     })
                 }
-            })
-        }
+            }
     } catch (error) {
         console.log(error);
     }

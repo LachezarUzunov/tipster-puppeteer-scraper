@@ -6,7 +6,6 @@ const Team = require('./models/teamsModel');
 const League = require('./models/leaguesModel');
 const { scrapingCountries } = require('./scraping/scrapingCountries');
 const { scrapingLeagues } = require('./scraping/scrapingLeagues');
-const { savingLeagues } = require('./controller/FixturesController');
 const { scrapingTeams } = require('./scraping/scrapingTeam');
 
 // Connecting to the mySQL databsae
@@ -26,18 +25,14 @@ async function main() {
 
     // Scraping countries and getting league URLs
     const leagueUrls = await scrapingCountries(url, browser)
-    let leaguesCountries = []
 
     // Scraping leagues and teams for each league URL;
-    for (let i = 1; i < 3; i++) {
-       const leagueAndCountry = await scrapingLeagues(leagueUrls[i], page);
-       const leagueTeams = await scrapingTeams(leagueUrls[i], page, leagueAndCountry.league);
+    for (let i = 1; i < leagueUrls.length; i++) {
+       const league = await scrapingLeagues(leagueUrls[i], page);
+      // await scrapingTeams(leagueUrls[i], page, league);
 
-       leaguesCountries.push(leagueAndCountry);
        await sleep(300);
     }
-
-   leaguesCountries.forEach(l => savingLeagues(l));
  }
 
 
@@ -52,7 +47,7 @@ Team.belongsTo(League, {
     foreignKey: 'id',
 })
 
-main();
+//main();
 
 const createTable = async () => {
     try {
@@ -62,4 +57,4 @@ const createTable = async () => {
         console.log('Error syncing the table and the model')
     }
 }
-//createTable();
+createTable();

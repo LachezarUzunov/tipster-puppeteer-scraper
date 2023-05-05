@@ -10,10 +10,9 @@ async function scrapingTeams(leagueUrl, page, league) {
         const teams = $('.module-links').find("a").map((index, element) => {
             return ($(element).text())
         }).get();
-        const leagueAndTeams = {league: league, teams: teams}
-
+        
         // Saving teams to leagues
-        await savingTeams(leagueAndTeams);
+        teams.forEach(team => savingTeams(team, league))
        
         return leagueAndTeams;       
     } catch (error) {
