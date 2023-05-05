@@ -54,8 +54,8 @@ Game.belongsTo(League, {
     foreignKey: 'id'
 });
 
-Game.hasOne(StandardMarket, { as: 'standard '});
-StandardMarket.belongsTo(Game, {
+StandardMarket.hasOne(Game, { as: 'standard '});
+Game.belongsTo(StandardMarket, {
     foreignKey: 'id'
 });
 
@@ -63,10 +63,10 @@ StandardMarket.belongsTo(Game, {
 
 const createTable = async () => {
     try {
-        const res = await Game.sync({ alter: true });
+        const res = await StandardMarket.sync({ alter: true });
         console.log('Table and model synced successfully')
     } catch (err) {
         console.log('Error syncing the table and the model')
     }
 }
-createTable();
+//createTable();
