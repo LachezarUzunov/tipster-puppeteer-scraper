@@ -91,4 +91,4 @@ const createTable = async () => {
         console.log('Error syncing the table and the model')
     }
 }
-createTable();
+//createTable();
