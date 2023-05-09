@@ -1,5 +1,5 @@
 const cheerio = require('cheerio');
-const { savingLeagues, getCountry } = require('../controller/FixturesController');
+const { savingLeagues, getCountry } = require('../controller/fixturesController');
 
 async function scrapingLeagues (leagueUrl, page) {
     try {
@@ -22,9 +22,8 @@ async function scrapingLeagues (leagueUrl, page) {
 
         const country = await getCountry(currentCountry);
         const countryId = country.id;
-
-        console.log(currentLeague, countryId)
-        await savingLeagues(currentLeague, countryId)    
+       // await savingLeagues(currentLeague, countryId);
+        return { currentLeague, currentCountry };    
     } catch (error) {
         console.log(error)
     } 

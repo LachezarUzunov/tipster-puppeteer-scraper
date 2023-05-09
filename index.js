@@ -23,38 +23,43 @@ async function sleep(miliseconds) {
     return new Promise(resolve => setTimeout(resolve, miliseconds))
 }
 
+async function gettingLeagueUrls(url, page) {
+    await page.goto(url, { waitUntil: 'networkidle2' })
+    const html = await page.evaluate(() => document.body.innerHTML);
+    const $ = cheerio.load(html);
+    
+    const leagueUrls = $('.dce').map((index, element) => {
+        return 'https://tipster.bg' + ($(element).find('a').attr('href'))
+    }).get();
+    leagueUrls.shift();
+    return leagueUrls;
+}
+
 async function main () {
     browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
 
+    const leagueUrls = await gettingLeagueUrls(url, page);
+    const leagueCountries = [];
+
     // 1. Scraping countries
   // await scrapingCountries(url, page)
     // 2. Scraping leagues
-   await leagues(url, page)
-}
-main()
-
-// 2. Scraping leagues
- async function leagues(url, page) {
-    try {
-        await page.goto(url, { waitUntil: 'networkidle2' })
-        const html = await page.evaluate(() => document.body.innerHTML);
-        const $ = cheerio.load(html);
-
-        const leagueUrls = $('.dce').map((index, element) => {
-            return 'https://tipster.bg' + ($(element).find('a').attr('href'))
-        }).get();
-        leagueUrls.shift();
-        console.log('number of leagues', leagueUrls.length)
-    
-        for (let i = 0; i < leagueUrls.length; i++) {
-            await scrapingLeagues(leagueUrls[i], page);
-            sleep(200)
-        }
-    } catch (error) {
-        console.log(error)
+    for (let i = 0; i < leagueUrls.length; i++) {
+        const { currentLeague, currentCountry } = await scrapingLeagues(leagueUrls[i], page);
+        console.log(currentLeague, currentCountry)
+        leagueCountries.push({
+            currentLeague,
+            currentCountry
+        });
+        sleep(200)
+    }
+    // 3. Scraping teams
+    for (let i = 0; i < leagueUrls.length; i++) {
+        await scrapingTeams(leagueUrls[i], page, leagueCountries[i].currentLeague, leagueCountries[i].currentCountry);
     }
 }
+main()
 
  async function gamesUrls() {
     let gamesUrls

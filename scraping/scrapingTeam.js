@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
-const { savingTeams } = require('../controller/FixturesController');
+const { savingTeams, getCountry } = require('../controller/fixturesController');
 
-async function scrapingTeams(leagueUrl, page, league) {
+async function scrapingTeams(leagueUrl, page, league, country) {
     try {
         await page.goto(leagueUrl, { waitUntil: "networkidle2" });
         const html = await page.evaluate(() => document.body.innerHTML);
@@ -10,10 +10,14 @@ async function scrapingTeams(leagueUrl, page, league) {
         const teams = $('.module-links').find("a").map((index, element) => {
             return ($(element).text())
         }).get();
+
+        const currentCountry = await getCountry(country);
+        const countryId = currentCountry.id;
     
         // Saving teams to leagues
-        teams.forEach(team => savingTeams(team, league))
-       
+        for (let i = 0; i < teams.length; i++) {
+            await savingTeams(teams[i], league, countryId)
+        }
         return teams;       
     } catch (error) {
         console.log(error)

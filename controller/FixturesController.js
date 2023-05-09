@@ -46,7 +46,7 @@ const savingLeagues = async (league, countryId) => {
             const existingLeague = await League.findOne({
                 where: {
                     league: league,
-                   countryId: countryId
+                    countryId: countryId
                 }
             })
 
@@ -64,12 +64,13 @@ const savingLeagues = async (league, countryId) => {
 }
 
 // Saving teams to leagues
-const savingTeams = async (team, league) => {
+const savingTeams = async (team, league, countryId) => {
     try {
         // find if league exists db
         const leagueExists = await League.findOne({
             where: {
                 league: league,
+                countryId: countryId
             }
         })
 

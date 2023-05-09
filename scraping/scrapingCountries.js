@@ -1,5 +1,5 @@
 const cheerio = require('cheerio');
-const { savingCountries } = require('../controller/FixturesController');
+const { savingCountries } = require('../controller/fixturesController');
 
 async function scrapingCountries(url, page) {
     let countries = []
