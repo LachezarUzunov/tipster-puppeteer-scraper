@@ -19,7 +19,10 @@ async function scrapingCountries(url, browser) {
     
         countries = countriesResult.filter((c, i) => c !== countriesResult[i + 1]);
         // ----- Saving countries to database --------- //
-        //countries.forEach(c => savingCountries(c));
+        for (let i = 0; i < countries.length; i++) {
+            await savingCountries(countries[i]);
+        }
+      
         leagueUrls.shift();
         return leagueUrls;
     } catch (error) {

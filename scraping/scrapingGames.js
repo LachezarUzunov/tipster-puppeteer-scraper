@@ -1,8 +1,8 @@
 const cheerio = require('cheerio');
 
-async function scrapingMarket (url, page) {
+async function scrapingGames (leagueUrl, page) {
     try {
-        await page.goto(url, { waitUntil: "networkidle2" });
+        await page.goto(leagueUrl, { waitUntil: "networkidle2" });
         const html = await page.evaluate(() => document.body.innerHTML);
         const $ = cheerio.load(html);
 
@@ -13,5 +13,5 @@ async function scrapingMarket (url, page) {
 }
 
 module.exports = {
-    scrapingMarket
+    scrapingGames
 }

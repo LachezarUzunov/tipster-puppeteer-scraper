@@ -50,23 +50,24 @@ const savingLeagues = async (league, country) => {
             }
         })
 
-       if (existingCountry) {
-            const existingLeague = await League.findOne({
-                where: {
-                    league: league,
-                   // countryId: existingCountry.id
-                }
-            })
+    //    if (existingCountry) {
+    //         const existingLeague = await League.findOne({
+    //             where: {
+    //                 league: league,
+    //                // countryId: existingCountry.id
+    //             }
+    //         })
 
-            if (existingLeague) {
-                throw 'Лигата съществува'
-            }
-               
-            await League.create({
-            league: league,
-            countryId: existingCountry.id
-            })
-       }
+    //         if (existingLeague) {
+    //             throw 'Лигата съществува'
+    //         }
+        const contryId = existingCountry.id
+               console.log('Existing country ID', existingCountry.id)
+             await League.create({
+             league: league,
+             countryId: contryId
+             })
+      // }
     } catch (error) {
         console.log(error)
     }
