@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const { savingLeagues } = require('../controller/FixturesController');
 
 async function scrapingLeagues (leagueUrl, page) {
- //   console.log(leagueUrl);
+    console.log(leagueUrl);
     try {
         await page.goto(leagueUrl, { waitUntil: "networkidle2" });
         const html = await page.evaluate(() => document.body.innerHTML);
@@ -19,11 +19,9 @@ async function scrapingLeagues (leagueUrl, page) {
             currentLeague = text[0].trim();
         }
         
-        const currentCountry = text[text.length - 1]
+        const currentCountry = text[text.length - 1].trim();
         console.log(currentLeague, currentCountry)
-        await savingLeagues(currentLeague, currentCountry)
-
-        return currentLeague       
+        await savingLeagues(currentLeague, currentCountry)    
     } catch (error) {
         console.log(error)
     } 

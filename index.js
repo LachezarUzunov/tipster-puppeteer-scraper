@@ -18,21 +18,23 @@ let browser;
 const url = 'https://tipster.bg/statistika';
 const secondUrl = 'https://tipster.bg'
 
-browser = await puppeteer.launch({ headless: false });
-const page = await browser.newPage();
-
 async function sleep(miliseconds) {
     return new Promise(resolve => setTimeout(resolve, miliseconds))
 }
 
-// 1. Scraping countries
-async function countries() {
+async function main () {
+    browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+
+    // 1. Scraping countries
     await scrapingCountries(url, page)
+    // 2. Scraping leagues
+   // await leagues(url, page)
 }
- countries()
+main()
 
 // 2. Scraping leagues
- async function leagues() {
+ async function leagues(url, page) {
     try {
         await page.goto(url, { waitUntil: 'networkidle2' })
         const html = await page.evaluate(() => document.body.innerHTML);
@@ -44,13 +46,12 @@ async function countries() {
     
         for (let i = 0; i < leagueUrls.length; i++) {
             await scrapingLeagues(leagueUrls[i], page);
+            sleep(200)
         }
     } catch (error) {
         console.log(error)
     }
 }
-leagues()
-
 
  async function gamesUrls() {
     let gamesUrls
@@ -90,4 +91,4 @@ const createTable = async () => {
         console.log('Error syncing the table and the model')
     }
 }
-//createTable();
+createTable();
