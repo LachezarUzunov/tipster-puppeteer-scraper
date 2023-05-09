@@ -25,32 +25,25 @@ const savingCountries = async (country) => {
     }
 }
 
-// Get country by name 
-// const getCountry = async (country) => {
-//     try {
-//         const currentCountry = Country.findOne({
-//             where: {
-//                 country: country
-//             }
-//         })
-
-//         return currentCountry;
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
-
-// Saving leagues to database with ID of the country
-const savingLeagues = async (league, country) => {
-   // console.log(league, country)
+// Get country by name
+const getCountry = async (country) => {
     try {
-        const existingCountry = await Country.findOne({
+        const currentCountry = Country.findOne({
             where: {
-                country : country
+                country: country
             }
         })
 
-    //    if (existingCountry) {
+        return currentCountry;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// Saving leagues to database with ID of the country
+const savingLeagues = async (league, countryId) => {
+   // console.log(league, countryId)
+    try {
     //         const existingLeague = await League.findOne({
     //             where: {
     //                 league: league,
@@ -61,11 +54,9 @@ const savingLeagues = async (league, country) => {
     //         if (existingLeague) {
     //             throw 'Лигата съществува'
     //         }
-        const contryId = existingCountry.id
-               console.log('Existing country ID', existingCountry.id)
              await League.create({
              league: league,
-             countryId: contryId
+             countryId: countryId
              })
       // }
     } catch (error) {
@@ -107,5 +98,6 @@ const savingTeams = async (team, league) => {
 module.exports = {
     savingCountries,
     savingLeagues,
-    savingTeams
+    savingTeams,
+    getCountry
 }

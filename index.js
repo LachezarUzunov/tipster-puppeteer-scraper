@@ -1,5 +1,6 @@
 const dotenv = require('dotenv').config();
 const puppeteer = require('puppeteer');
+const cheerio = require('cheerio');
 const { connectDB, sequelize } = require('./config/db');
 const Country = require('./models/countryModel');
 const Team = require('./models/teamsModel');
@@ -27,9 +28,9 @@ async function main () {
     const page = await browser.newPage();
 
     // 1. Scraping countries
-    await scrapingCountries(url, page)
+   // await scrapingCountries(url, page)
     // 2. Scraping leagues
-   // await leagues(url, page)
+   await leagues(url, page)
 }
 main()
 
@@ -43,6 +44,8 @@ main()
         const leagueUrls = $('.dce').map((index, element) => {
             return 'https://tipster.bg' + ($(element).find('a').attr('href'))
         }).get();
+        leagueUrls.shift();
+        console.log('number of leagues', leagueUrls.length)
     
         for (let i = 0; i < leagueUrls.length; i++) {
             await scrapingLeagues(leagueUrls[i], page);
@@ -63,32 +66,24 @@ main()
 
 
 // Setting up database relations
-Country.hasMany(League, { as: 'leagues'});
-League.belongsTo(Country, {
-    foreignKey: 'id',
-});
+Country.hasMany(League);
+League.belongsTo(Country);
 
-League.hasMany(Team, { as: 'teams '});
-Team.belongsTo(League, {
-    foreignKey: 'id',
-});
+League.hasMany(Team);
+Team.belongsTo(League);
 
-League.hasMany(Game, { as: 'games' });
-Game.belongsTo(League, {
-    foreignKey: 'id'
-});
+League.hasMany(Game);
+Game.belongsTo(League);
 
-Game.hasOne(StandardMarket, { as: 'game' })
-StandardMarket.belongsTo(Game, {
-    foreignKey: 'id'
-})
+Game.hasOne(StandardMarket)
+StandardMarket.belongsTo(Game)
 
 const createTable = async () => {
     try {
-        const res = await Country.sync();
+        const res = await sequelize.sync({ alter: true });
         console.log('Table and model synced successfully')
     } catch (err) {
         console.log('Error syncing the table and the model')
     }
 }
-createTable();
+//createTable();
