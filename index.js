@@ -28,7 +28,7 @@ async function main () {
     const page = await browser.newPage();
 
     // 1. Scraping countries
-   // await scrapingCountries(url, page)
+  // await scrapingCountries(url, page)
     // 2. Scraping leagues
    await leagues(url, page)
 }
@@ -86,4 +86,4 @@ const createTable = async () => {
         console.log('Error syncing the table and the model')
     }
 }
-//createTable();
+createTable();

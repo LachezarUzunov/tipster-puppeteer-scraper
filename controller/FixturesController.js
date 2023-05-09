@@ -42,23 +42,22 @@ const getCountry = async (country) => {
 
 // Saving leagues to database with ID of the country
 const savingLeagues = async (league, countryId) => {
-   // console.log(league, countryId)
     try {
-    //         const existingLeague = await League.findOne({
-    //             where: {
-    //                 league: league,
-    //                // countryId: existingCountry.id
-    //             }
-    //         })
+            const existingLeague = await League.findOne({
+                where: {
+                    league: league,
+                   countryId: countryId
+                }
+            })
 
-    //         if (existingLeague) {
-    //             throw 'Лигата съществува'
-    //         }
+            if (existingLeague) {
+                throw 'Лигата съществува'
+            }
+            
              await League.create({
              league: league,
              countryId: countryId
              })
-      // }
     } catch (error) {
         console.log(error)
     }
