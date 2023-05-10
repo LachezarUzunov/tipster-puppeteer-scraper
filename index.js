@@ -69,7 +69,6 @@ main()
     await scrapingGames(secondUrl, page);
  }
 
-
 // Setting up database relations
 Country.hasMany(League);
 League.belongsTo(Country);
