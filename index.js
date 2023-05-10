@@ -35,6 +35,7 @@ async function gettingLeagueUrls(url, page) {
     return leagueUrls;
 }
 
+// Scraping countries, leagues and teams
 async function main () {
     browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
@@ -45,29 +46,47 @@ async function main () {
     // 1. Scraping countries
   // await scrapingCountries(url, page)
     // 2. Scraping leagues
-    for (let i = 0; i < leagueUrls.length; i++) {
-        const { currentLeague, currentCountry } = await scrapingLeagues(leagueUrls[i], page);
-        console.log(currentLeague, currentCountry)
-        leagueCountries.push({
-            currentLeague,
-            currentCountry
-        });
-        sleep(200)
-    }
+    // for (let i = 0; i < leagueUrls.length; i++) {
+    //     const { currentLeague, currentCountry } = await scrapingLeagues(leagueUrls[i], page);
+    //     console.log(currentLeague, currentCountry)
+    //     leagueCountries.push({
+    //         currentLeague,
+    //         currentCountry
+    //     });
+    //     sleep(200)
+    // }
     // 3. Scraping teams
-    for (let i = 0; i < leagueUrls.length; i++) {
-        await scrapingTeams(leagueUrls[i], page, leagueCountries[i].currentLeague, leagueCountries[i].currentCountry);
-    }
+    // for (let i = 0; i < leagueUrls.length; i++) {
+    //     await scrapingTeams(leagueUrls[i], page, leagueCountries[i].currentLeague, leagueCountries[i].currentCountry);
+    // }
 }
-main()
+//main()
 
- async function gamesUrls() {
-    let gamesUrls
+ async function gettingGamesUrls(page) {
     await page.goto(secondUrl, { waitUntil: "networkidle2" });
     const html = await page.evaluate(() => document.body.innerHTML);
     const $ = cheerio.load(html);
-    await scrapingGames(secondUrl, page);
+    
+    const gameUrls = $('.game').map((index, element) => {
+         return 'https://tipster.bg' + ($(element).attr('href'))
+    }).get();
+
+    return gameUrls;
  }
+
+
+ async function gettingFixtures() {
+    browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    const gameUrls = await gettingGamesUrls(page)
+    console.log(gameUrls)
+
+    for (let i = 0; i < gameUrls.length; i++) {
+        await scrapingGames(gameUrls[i], page)
+    }
+ }
+
+ gettingFixtures();
 
 // Setting up database relations
 Country.hasMany(League);
