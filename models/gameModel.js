@@ -33,6 +33,10 @@ const Game = sequelize.define('game', {
     hasStarted: {
         type: DataTypes.BOOLEAN,
         default: false,
+    },
+    hasFinished: {
+        type: DataTypes.BOOLEAN,
+        default: false
     }
 })
 

@@ -1,4 +1,5 @@
 const Country = require('../models/countryModel');
+const Game = require('../models/gameModel');
 const League = require('../models/leaguesModel');
 const Team = require('../models/teamsModel');
 
@@ -35,6 +36,22 @@ const getCountry = async (country) => {
         })
 
         return currentCountry;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// Get League bu CountryID and leagueName
+const getLeague = async (countryId, leagueName) => {
+    try {
+        const league = League.findOne({
+            where: {
+                league: leagueName,
+                countryId: countryId
+            }
+        })
+
+        return league;
     } catch (error) {
         console.log(error)
     }
@@ -95,9 +112,40 @@ const savingTeams = async (team, league, countryId) => {
     }
 }
 
+const savingGames = async (time, homeTeam, awayTeam, hasStarted, hasFinished, leagueId) => {
+    try {
+        // find if match is recorded already
+        const existingGame = await Game.findOne({
+            where: {
+                homeTeam: homeTeam,
+                awayTeam: awayTeam,
+                time: time
+            }
+        })
+
+        if (existingGame) {
+            throw 'Game recorded already'
+        }
+
+        await Game.create({
+            time: time,
+            homeTeam: homeTeam,
+            awayTeam: awayTeam,
+            hasStarted: hasStarted,
+            hasFinished: hasFinished,
+            leagueId: leagueId
+        })
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     savingCountries,
     savingLeagues,
     savingTeams,
-    getCountry
+    getCountry,
+    savingGames,
+    getLeague
 }
