@@ -1,19 +1,18 @@
 const cheerio = require('cheerio');
 const { getGame } = require('../controller/fixturesController');
-const { savingStandartMarket } = require('../controller/marketsController');
 
-async function scrapingMarket (url, page, time, homeTeam, awayTeam) {
+async function scrapingDoubleChance (url, page, time, homeTeam, awayTeam) {
     let gameId = ''
     try {
         await page.goto(url, { waitUntil: "networkidle2" });
         const html = await page.evaluate(() => document.body.innerHTML);
         const $ = cheerio.load(html);
-        const odds = $($('.odds')[0]).find('.odd').map((index, element) => {
+        const odds = $($('.odds')[1]).find('.odd').map((index, element) => {
             return ($(element).text())
         }).get();
-        const homeTeamWins = odds[0];
-        const draw = odds[1];
-        const awayTeamWins = odds[2];
+        const homeOrDraw = odds[0];
+        const homeOrAway = odds[1];
+        const drawOrAway = odds[2];
     
         const game = await getGame(time, homeTeam, awayTeam);
         if (game) {
@@ -21,7 +20,7 @@ async function scrapingMarket (url, page, time, homeTeam, awayTeam) {
         }
 
         if (gameId !== '') {
-            await savingStandartMarket(homeTeamWins, draw, awayTeamWins, gameId)
+            await savingStandartMarket(homeOrDraw, homeOrAway, drawOrAway, gameId)
         }
      
     } catch (error) {
@@ -30,5 +29,5 @@ async function scrapingMarket (url, page, time, homeTeam, awayTeam) {
 }
 
 module.exports = {
-    scrapingMarket
+    scrapingDoubleChance
 }
