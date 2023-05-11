@@ -7,11 +7,14 @@ const Team = require('./models/teamsModel');
 const League = require('./models/leaguesModel');
 const Game = require('./models/gameModel');
 const StandardMarket = require('./models/marketsModels/standardMarketModel');
+const DoubleChanceMarket = require('./models/marketsModels/doubleChanceModel');
 const { scrapingCountries } = require('./scraping/scrapingCountries');
 const { scrapingLeagues } = require('./scraping/scrapingLeagues');
 const { scrapingTeams } = require('./scraping/scrapingTeam');
 const { scrapingGames } = require('./scraping/scrapingGames');
 const { scrapingMarket } = require('./scraping/scrapingMarket');
+const { scrapingDoubleChance } = require('./scraping/scrapingDoubleChanceMarket');
+
 
 // Connecting to the mySQL databsae
 connectDB()
@@ -84,7 +87,8 @@ async function main () {
     for (let i = 0; i < gameUrls.length; i++) {
         const { time, homeTeam, awayTeam } = await scrapingGames(gameUrls[i], page);
        // console.log(time, homeTeam, awayTeam);
-        await scrapingMarket(gameUrls[i], page, time, homeTeam, awayTeam)
+        await scrapingMarket(gameUrls[i], page, time, homeTeam, awayTeam);
+        await scrapingDoubleChance(gameUrls[i], page, time, homeTeam, awayTeam)
     }
  }
 
@@ -103,6 +107,9 @@ Game.belongsTo(League);
 Game.hasOne(StandardMarket)
 StandardMarket.belongsTo(Game)
 
+Game.hasOne(DoubleChanceMarket)
+DoubleChanceMarket.belongsTo(Game)
+
 const createTable = async () => {
     try {
         const res = await sequelize.sync({ alter: true });
@@ -111,4 +118,4 @@ const createTable = async () => {
         console.log('Error syncing the table and the model')
     }
 }
-//createTable();
+createTable();

@@ -1,4 +1,4 @@
-const DoubleChanceMarket = require('../models/marketsModels/doubleChangeModel');
+const DoubleChanceMarket = require('../models/marketsModels/doubleChanceModel');
 const StandardMarket = require('../models/marketsModels/standardMarketModel');
 
 // Saving 1,X,2 market

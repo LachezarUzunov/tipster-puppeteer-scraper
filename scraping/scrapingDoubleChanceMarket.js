@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const { getGame } = require('../controller/fixturesController');
+const { savingDoubleChanceMarket } = require('../controller/marketsController');
 
 async function scrapingDoubleChance (url, page, time, homeTeam, awayTeam) {
     let gameId = ''
@@ -20,7 +21,7 @@ async function scrapingDoubleChance (url, page, time, homeTeam, awayTeam) {
         }
 
         if (gameId !== '') {
-            await savingStandartMarket(homeOrDraw, homeOrAway, drawOrAway, gameId)
+            await savingDoubleChanceMarket(homeOrDraw, homeOrAway, drawOrAway, gameId)
         }
      
     } catch (error) {
