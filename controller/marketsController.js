@@ -1,4 +1,5 @@
 const DoubleChanceMarket = require('../models/marketsModels/doubleChanceModel');
+const DrawNoBetMarket = require('../models/marketsModels/drawNoBetModel');
 const StandardMarket = require('../models/marketsModels/standardMarketModel');
 
 // Saving 1,X,2 market
@@ -77,7 +78,44 @@ const savingDoubleChanceMarket = async (homeOrDraw, homeOrAway, drawOrAway, game
     }
 }
 
+// Saving Double chance - 1X, 12, X2
+const savingDrawNoBetMarket = async (home, away, gameId) => {
+    try {
+        // find if odds are recorded already
+        const existingMarket = await DrawNoBetMarket.findOne({
+            where: {
+                gameId: gameId
+            }
+        })
+
+        // Update odds
+        if (existingMarket) {
+            await existingMarket.update({
+                home: home,
+                away: away,
+            }, {
+                where: {
+                    gameId: gameId
+                }
+            })
+            return existingMarket;
+        }
+
+        const drawNoBetMarket = await DrawNoBetMarket.create({
+            home: home,
+            away: away,
+            gameId: gameId,
+        })
+
+            return drawNoBetMarket;
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     savingStandartMarket,
-    savingDoubleChanceMarket
+    savingDoubleChanceMarket,
+    savingDrawNoBetMarket
 }

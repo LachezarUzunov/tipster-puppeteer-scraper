@@ -8,12 +8,15 @@ const League = require('./models/leaguesModel');
 const Game = require('./models/gameModel');
 const StandardMarket = require('./models/marketsModels/standardMarketModel');
 const DoubleChanceMarket = require('./models/marketsModels/doubleChanceModel');
+const DrawNoBetMarket = require('./models/marketsModels/drawNoBetModel');
 const { scrapingCountries } = require('./scraping/scrapingCountries');
 const { scrapingLeagues } = require('./scraping/scrapingLeagues');
 const { scrapingTeams } = require('./scraping/scrapingTeam');
 const { scrapingGames } = require('./scraping/scrapingGames');
 const { scrapingMarket } = require('./scraping/scrapingMarket');
 const { scrapingDoubleChance } = require('./scraping/scrapingDoubleChanceMarket');
+const { scrapingDrawNoBet } = require('./scraping/scrapingDrawNoBetMarket');
+
 
 
 // Connecting to the mySQL databsae
@@ -87,8 +90,9 @@ async function main () {
     for (let i = 0; i < gameUrls.length; i++) {
         const { time, homeTeam, awayTeam } = await scrapingGames(gameUrls[i], page);
        // console.log(time, homeTeam, awayTeam);
-        await scrapingMarket(gameUrls[i], page, time, homeTeam, awayTeam);
-        await scrapingDoubleChance(gameUrls[i], page, time, homeTeam, awayTeam)
+        // await scrapingMarket(gameUrls[i], page, time, homeTeam, awayTeam);
+        // await scrapingDoubleChance(gameUrls[i], page, time, homeTeam, awayTeam);
+        await scrapingDrawNoBet(gameUrls[i], page, time, homeTeam, awayTeam)
     }
  }
 
@@ -104,11 +108,14 @@ Team.belongsTo(League);
 League.hasMany(Game);
 Game.belongsTo(League);
 
-Game.hasOne(StandardMarket)
-StandardMarket.belongsTo(Game)
+Game.hasOne(StandardMarket);
+StandardMarket.belongsTo(Game);
 
-Game.hasOne(DoubleChanceMarket)
-DoubleChanceMarket.belongsTo(Game)
+Game.hasOne(DoubleChanceMarket);
+DoubleChanceMarket.belongsTo(Game);
+
+Game.hasOne(DrawNoBetMarket);
+DrawNoBetMarket.belongsTo(Game);
 
 const createTable = async () => {
     try {
