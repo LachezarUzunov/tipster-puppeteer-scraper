@@ -58,7 +58,7 @@ const getLeague = async (countryId, leagueName) => {
 }
 
 // Get League bu CountryID and leagueName
-const getGame = async (homeTeam, awayTeam, time) => {
+const getGame = async (time, homeTeam, awayTeam) => {
     try {
         const game = Game.findOne({
             where: {

@@ -83,7 +83,7 @@ async function main () {
 
     for (let i = 0; i < gameUrls.length; i++) {
         const { time, homeTeam, awayTeam } = await scrapingGames(gameUrls[i], page);
-        console.log(time, homeTeam, awayTeam);
+       // console.log(time, homeTeam, awayTeam);
         await scrapingMarket(gameUrls[i], page, time, homeTeam, awayTeam)
     }
  }
