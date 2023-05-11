@@ -9,6 +9,7 @@ const Game = require('./models/gameModel');
 const StandardMarket = require('./models/marketsModels/standardMarketModel');
 const DoubleChanceMarket = require('./models/marketsModels/doubleChanceModel');
 const DrawNoBetMarket = require('./models/marketsModels/drawNoBetModel');
+const GoalGoalMarket = require('./models/marketsModels/goalGoalModel');
 const { scrapingCountries } = require('./scraping/scrapingCountries');
 const { scrapingLeagues } = require('./scraping/scrapingLeagues');
 const { scrapingTeams } = require('./scraping/scrapingTeam');
@@ -16,6 +17,7 @@ const { scrapingGames } = require('./scraping/scrapingGames');
 const { scrapingMarket } = require('./scraping/scrapingMarket');
 const { scrapingDoubleChance } = require('./scraping/scrapingDoubleChanceMarket');
 const { scrapingDrawNoBet } = require('./scraping/scrapingDrawNoBetMarket');
+
 
 
 
@@ -116,6 +118,9 @@ DoubleChanceMarket.belongsTo(Game);
 
 Game.hasOne(DrawNoBetMarket);
 DrawNoBetMarket.belongsTo(Game);
+
+Game.hasOne(GoalGoalMarket);
+GoalGoalMarket.belongsTo(Game)
 
 const createTable = async () => {
     try {
