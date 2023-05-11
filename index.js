@@ -17,6 +17,7 @@ const { scrapingGames } = require('./scraping/scrapingGames');
 const { scrapingMarket } = require('./scraping/scrapingMarket');
 const { scrapingDoubleChance } = require('./scraping/scrapingDoubleChanceMarket');
 const { scrapingDrawNoBet } = require('./scraping/scrapingDrawNoBetMarket');
+const { scrapingGoalGoal } = require('./scraping/scrapingGoalGoalMarket');
 
 
 
@@ -94,7 +95,8 @@ async function main () {
        // console.log(time, homeTeam, awayTeam);
         // await scrapingMarket(gameUrls[i], page, time, homeTeam, awayTeam);
         // await scrapingDoubleChance(gameUrls[i], page, time, homeTeam, awayTeam);
-        await scrapingDrawNoBet(gameUrls[i], page, time, homeTeam, awayTeam)
+        // await scrapingDrawNoBet(gameUrls[i], page, time, homeTeam, awayTeam);
+        await scrapingGoalGoal(gameUrls[i], page, time, homeTeam, awayTeam)
     }
  }
 

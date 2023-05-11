@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const { DataTypes } = Sequelize;
 const { sequelize } = require('../../config/db');
 
-const GoalGoalMarket = sequelize.define({
+const GoalGoalMarket = sequelize.define('goalGoalMarket', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
