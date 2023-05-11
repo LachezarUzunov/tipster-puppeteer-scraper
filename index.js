@@ -11,6 +11,7 @@ const { scrapingCountries } = require('./scraping/scrapingCountries');
 const { scrapingLeagues } = require('./scraping/scrapingLeagues');
 const { scrapingTeams } = require('./scraping/scrapingTeam');
 const { scrapingGames } = require('./scraping/scrapingGames');
+const { scrapingMarket } = require('./scraping/scrapingMarket');
 
 // Connecting to the mySQL databsae
 connectDB()
@@ -79,10 +80,11 @@ async function main () {
     browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     const gameUrls = await gettingGamesUrls(page)
-    console.log(gameUrls)
 
     for (let i = 0; i < gameUrls.length; i++) {
-        await scrapingGames(gameUrls[i], page)
+        const { time, homeTeam, awayTeam } = await scrapingGames(gameUrls[i], page);
+        console.log(time, homeTeam, awayTeam);
+        await scrapingMarket(gameUrls[i], page, time, homeTeam, awayTeam)
     }
  }
 

@@ -57,6 +57,23 @@ const getLeague = async (countryId, leagueName) => {
     }
 }
 
+// Get League bu CountryID and leagueName
+const getGame = async (homeTeam, awayTeam, time) => {
+    try {
+        const game = Game.findOne({
+            where: {
+                time: time,
+                homeTeam: homeTeam,
+                awayTeam: awayTeam
+            }
+        })
+
+        return game;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Saving leagues to database with ID of the country
 const savingLeagues = async (league, countryId) => {
     try {
@@ -127,7 +144,7 @@ const savingGames = async (time, homeTeam, awayTeam, hasStarted, hasFinished, le
             throw 'Game recorded already'
         }
 
-        await Game.create({
+        const game = await Game.create({
             time: time,
             homeTeam: homeTeam,
             awayTeam: awayTeam,
@@ -135,6 +152,8 @@ const savingGames = async (time, homeTeam, awayTeam, hasStarted, hasFinished, le
             hasFinished: hasFinished,
             leagueId: leagueId
         })
+
+        return game.id;
 
     } catch (error) {
         console.log(error)
@@ -147,5 +166,6 @@ module.exports = {
     savingTeams,
     getCountry,
     savingGames,
-    getLeague
+    getLeague,
+    getGame
 }

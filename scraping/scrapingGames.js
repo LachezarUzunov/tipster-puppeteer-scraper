@@ -8,6 +8,7 @@ async function scrapingGames (matchUrl, page) {
     let country;
     let countryId = '';
     let leagueId = '';
+    let gameId = '';
     try {
         await page.goto(matchUrl, { waitUntil: "networkidle2" });
         const html = await page.evaluate(() => document.body.innerHTML);
@@ -47,15 +48,19 @@ async function scrapingGames (matchUrl, page) {
             const league = await getLeague(countryId, leagueName)
             if (league) {
                 leagueId = league.id
-                console.log(leagueId)
+               // console.log(leagueId)
             } 
         }
 
         if (leagueId !== '') {
-            await savingGames(time, homeTeam, awayTeam, hasStarted, hasFinished, leagueId)
+         //   gameId = await savingGames(time, homeTeam, awayTeam, hasStarted, hasFinished, leagueId)
         }
        
-   
+        if (gameId !== '') {
+            return gameId;
+        }
+
+        return { time, homeTeam, awayTeam }
      
     } catch (error) {
         console.log(error)
