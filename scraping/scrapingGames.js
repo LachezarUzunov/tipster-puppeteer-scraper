@@ -48,12 +48,11 @@ async function scrapingGames (matchUrl, page) {
             const league = await getLeague(countryId, leagueName)
             if (league) {
                 leagueId = league.id
-               // console.log(leagueId)
             } 
         }
 
         if (leagueId !== '') {
-         //   gameId = await savingGames(time, homeTeam, awayTeam, hasStarted, hasFinished, leagueId)
+           // gameId = await savingGames(time, homeTeam, awayTeam, hasStarted, hasFinished, leagueId)
         }
        
         if (gameId !== '') {

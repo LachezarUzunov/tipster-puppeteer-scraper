@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const { getGame } = require('../controller/fixturesController');
+const { savingOverUnderMarket } = require('../controller/marketsController');
 
 async function scrapingOverUnder (url, page, time, homeTeam, awayTeam) {
     let gameId = ''
@@ -23,7 +24,7 @@ async function scrapingOverUnder (url, page, time, homeTeam, awayTeam) {
         }
 
         if (gameId !== '') {
-            await s(over15, under15, over25, under25, over35, under35)
+            await savingOverUnderMarket(over15, under15, over25, under25, over35, under35, gameId)
         }
      
     } catch (error) {

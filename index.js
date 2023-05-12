@@ -10,6 +10,7 @@ const StandardMarket = require('./models/marketsModels/standardMarketModel');
 const DoubleChanceMarket = require('./models/marketsModels/doubleChanceModel');
 const DrawNoBetMarket = require('./models/marketsModels/drawNoBetModel');
 const GoalGoalMarket = require('./models/marketsModels/goalGoalModel');
+const OverUnderMarket = require('./models/marketsModels/overUnderModel');
 const { scrapingCountries } = require('./scraping/scrapingCountries');
 const { scrapingLeagues } = require('./scraping/scrapingLeagues');
 const { scrapingTeams } = require('./scraping/scrapingTeam');
@@ -18,9 +19,7 @@ const { scrapingMarket } = require('./scraping/scrapingMarket');
 const { scrapingDoubleChance } = require('./scraping/scrapingDoubleChanceMarket');
 const { scrapingDrawNoBet } = require('./scraping/scrapingDrawNoBetMarket');
 const { scrapingGoalGoal } = require('./scraping/scrapingGoalGoalMarket');
-
-
-
+const { scrapingOverUnder } = require('./scraping/scrapingOverUnderMarket');
 
 // Connecting to the mySQL databsae
 connectDB()
@@ -91,13 +90,15 @@ async function main () {
     const gameUrls = await gettingGamesUrls(page)
 
     for (let i = 0; i < gameUrls.length; i++) {
+        
         const { time, homeTeam, awayTeam } = await scrapingGames(gameUrls[i], page);
        // console.log(time, homeTeam, awayTeam);
-        // await scrapingMarket(gameUrls[i], page, time, homeTeam, awayTeam);
-        // await scrapingDoubleChance(gameUrls[i], page, time, homeTeam, awayTeam);
-        // await scrapingDrawNoBet(gameUrls[i], page, time, homeTeam, awayTeam);
-        await scrapingGoalGoal(gameUrls[i], page, time, homeTeam, awayTeam)
-    }
+       // await scrapingMarket(gameUrls[i], page, time, homeTeam, awayTeam);
+       // await scrapingDoubleChance(gameUrls[i], page, time, homeTeam, awayTeam);
+       // await scrapingDrawNoBet(gameUrls[i], page, time, homeTeam, awayTeam);
+       // await scrapingGoalGoal(gameUrls[i], page, time, homeTeam, awayTeam);
+        await scrapingOverUnder(gameUrls[i], page, time, homeTeam, awayTeam);
+    }   
  }
 
  gettingFixtures();
@@ -122,7 +123,10 @@ Game.hasOne(DrawNoBetMarket);
 DrawNoBetMarket.belongsTo(Game);
 
 Game.hasOne(GoalGoalMarket);
-GoalGoalMarket.belongsTo(Game)
+GoalGoalMarket.belongsTo(Game);
+
+Game.hasOne(OverUnderMarket);
+OverUnderMarket.belongsTo(Game);
 
 const createTable = async () => {
     try {
@@ -132,4 +136,4 @@ const createTable = async () => {
         console.log('Error syncing the table and the model')
     }
 }
-createTable();
+//createTable();
